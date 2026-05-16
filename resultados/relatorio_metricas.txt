@@ -1,0 +1,79 @@
+======================================================================
+  RELATÓRIO DE MÉTRICAS — PROJETO ML: BANDEIRAS TARIFÁRIAS
+======================================================================
+
+
+──────────────────────────────────────────────────
+  Regressão Logística
+──────────────────────────────────────────────────
+  Macro F1-Score (Teste):    0.471
+  Weighted F1-Score (Teste): 0.583
+  CV 5-Fold Macro F1:        0.308 (±0.046)
+
+              precision    recall  f1-score   support
+
+       Verde       0.88      0.71      0.79        21
+     Amarela       0.33      0.33      0.33         6
+     Verm_P1       0.27      0.43      0.33         7
+     Verm_P2       0.43      0.43      0.43         7
+
+    accuracy                           0.56        41
+   macro avg       0.48      0.48      0.47        41
+weighted avg       0.62      0.56      0.58        41
+
+
+──────────────────────────────────────────────────
+  Random Forest
+──────────────────────────────────────────────────
+  Macro F1-Score (Teste):    0.446
+  Weighted F1-Score (Teste): 0.529
+  CV 5-Fold Macro F1:        0.366 (±0.102)
+
+              precision    recall  f1-score   support
+
+       Verde       0.65      0.71      0.68        21
+     Amarela       0.33      0.33      0.33         6
+     Verm_P1       0.33      0.29      0.31         7
+     Verm_P2       0.50      0.43      0.46         7
+
+    accuracy                           0.54        41
+   macro avg       0.45      0.44      0.45        41
+weighted avg       0.53      0.54      0.53        41
+
+
+──────────────────────────────────────────────────
+  SVM (RBF)
+──────────────────────────────────────────────────
+  Macro F1-Score (Teste):    0.432
+  Weighted F1-Score (Teste): 0.515
+  CV 5-Fold Macro F1:        0.353 (±0.128)
+
+              precision    recall  f1-score   support
+
+       Verde       0.67      0.67      0.67        21
+     Amarela       0.29      0.33      0.31         6
+     Verm_P1       0.30      0.43      0.35         7
+     Verm_P2       0.67      0.29      0.40         7
+
+    accuracy                           0.51        41
+   macro avg       0.48      0.43      0.43        41
+weighted avg       0.55      0.51      0.52        41
+
+
+==================================================
+  TESTE ESTATÍSTICO DE McNEMAR
+==================================================
+  Comparando: Regressão Logística vs Random Forest
+  Tabela de Contingência: [[17, 6], [5, 13]]
+  P-Value: 1.0000
+  ➡️  Conclusão: Diferença NÃO significativa (p ≥ 0.05)
+  ➡️  Pela regra de parcimônia, escolhe-se o modelo mais simples.
+
+
+==================================================
+  INSIGHTS DE NEGÓCIO
+==================================================
+
+Top 3 Features: Vol_Sul_Lag1, Vol_Sul_Lag2, Vol_Norte_Lag2
+Modelo Recomendado: Regressão Logística (Macro F1 = 0.471)
+Validação Cruzada: 0.308 ± 0.046
