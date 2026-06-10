@@ -1,0 +1,19 @@
+PIPELINE DIÁRIO — XGBoost Diário (Optuna)
+=======================================================
+Macro F1 (Teste):   0.5199
+Macro F1 (Tuned):   0.5207
+Acurácia (Teste):   63.9%
+Acurácia (Tuned):   63.7%
+CV 5-Fold F1:       0.9991 (±0.0009)
+
+              precision    recall  f1-score   support
+
+       Verde       0.78      0.83      0.81       333
+     Amarela       0.00      0.00      0.00        91
+     Verm.P1       0.46      0.55      0.50       184
+     Verm.P2       0.88      0.69      0.77       210
+
+    accuracy                           0.64       818
+   macro avg       0.53      0.52      0.52       818
+weighted avg       0.65      0.64      0.64       818
+

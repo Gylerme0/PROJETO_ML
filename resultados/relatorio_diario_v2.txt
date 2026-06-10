@@ -1,0 +1,31 @@
+PIPELINE DIÁRIO v2 — CORRIGIDO (GroupKFold por Mês)
+
+Macro F1 (Teste):         0.5195
+Macro F1 (Tuned):         0.5195
+Acurácia (Teste):         65.5%
+Acurácia (Tuned):         65.5%
+
+Report:
+              precision    recall  f1-score   support
+
+       Verde       0.80      0.87      0.83       333
+     Amarela       0.00      0.00      0.00        91
+     Verm.P1       0.43      0.43      0.43       184
+     Verm.P2       0.83      0.80      0.81       210
+
+    accuracy                           0.66       818
+   macro avg       0.52      0.52      0.52       818
+weighted avg       0.64      0.66      0.65       818
+
+Report (Tuned):
+              precision    recall  f1-score   support
+
+       Verde       0.80      0.87      0.83       333
+     Amarela       0.00      0.00      0.00        91
+     Verm.P1       0.43      0.43      0.43       184
+     Verm.P2       0.83      0.80      0.81       210
+
+    accuracy                           0.66       818
+   macro avg       0.52      0.52      0.52       818
+weighted avg       0.64      0.66      0.65       818
+

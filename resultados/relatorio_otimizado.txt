@@ -1,0 +1,42 @@
+PIPELINE OTIMIZADO — BANDEIRAS TARIFÁRIAS
+
+
+=======================================================
+XGBoost (Optuna)
+=======================================================
+Macro F1 (Teste): 0.5167
+Acurácia (Teste): 53.8%
+CV 10-Fold F1:    0.8207 (±0.1038)
+
+              precision    recall  f1-score   support
+
+       Verde       0.73      0.58      0.65        19
+     Amarela       0.33      0.50      0.40         6
+     Verm.P1       0.30      0.43      0.35         7
+     Verm.P2       0.80      0.57      0.67         7
+
+    accuracy                           0.54        39
+   macro avg       0.54      0.52      0.52        39
+weighted avg       0.61      0.54      0.56        39
+
+=======================================================
+Stacking Ensemble
+=======================================================
+Macro F1 (Teste): 0.5255
+Acurácia (Teste): 56.4%
+CV 10-Fold F1:    0.9129 (±0.0743)
+
+              precision    recall  f1-score   support
+
+       Verde       0.71      0.63      0.67        19
+     Amarela       0.50      0.33      0.40         6
+     Verm.P1       0.20      0.29      0.24         7
+     Verm.P2       0.75      0.86      0.80         7
+
+    accuracy                           0.56        39
+   macro avg       0.54      0.53      0.53        39
+weighted avg       0.59      0.56      0.57        39
+
+XGBoost (Optuna) + Threshold: F1=0.5167 | Acc=53.8%
+
+Stacking Ensemble + Threshold: F1=0.5270 | Acc=56.4%
