@@ -1,0 +1,3 @@
+Teste de McNemar (Random Forest vs XGBoost)
+Tabela de contingência: [[np.int64(3278), np.int64(97)], [np.int64(146), np.int64(617)]]
+p-value: 2.0756e-03

@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+data/raw/
+data/processed/
+.env
+graficos/
+resultados/
+*.db
+*.parquet
+*.csv
+*.xlsx
+*.pdf
+.gemini/

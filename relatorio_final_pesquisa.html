@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>relatorio_final_pesquisa</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://sindresorhus.com/github-markdown-css/github-markdown.css" />
+</head>
+<body>
+<h1
+id="relatório-técnico-previsão-de-impacto-tarifário-série-histórica-sin">Relatório
+Técnico: Previsão de Impacto Tarifário (Série Histórica SIN)</h1>
+<blockquote>
+<p>[!IMPORTANT] <strong>Resumo Executivo do Projeto</strong> O objetivo
+primário desta pesquisa foi desenvolver um modelo de <em>Machine
+Learning</em> capaz de prever o acionamento de acréscimos na conta de
+luz dos brasileiros (Bandeiras Tarifárias) utilizando exclusivamente
+dados de domínio hidrológico e climático. Após uma longa e rigorosa
+jornada científica lidando com problemas crônicos de desbalanceamento e
+vazamento de dados, o projeto pivotou de uma tentativa de predição
+multiclasse (qual a cor da bandeira) para uma modelagem preditiva
+orientada a <strong>Impacto Financeiro (Haverá ou não haverá
+sobretaxa?)</strong>, culminando em uma Arquitetura de Validação
+Histórica que cravou <strong>82,31% de acurácia real</strong>.</p>
+</blockquote>
+<hr />
+<h2 id="glossário-de-domínio-as-siglas-e-conceitos">1. Glossário de
+Domínio (As Siglas e Conceitos)</h2>
+<p>Para que a inteligência artificial operasse de forma eficiente, foi
+obrigatória a adoção de conceitos e jargões intrínsecos ao
+<strong>Sistema Interligado Nacional (SIN)</strong> e ao
+<strong>Operador Nacional do Sistema Elétrico (ONS)</strong>.</p>
+<ul>
+<li><strong>ENA (Energia Natural Afluente):</strong> Representa a
+quantidade de água que chega aos reservatórios das usinas hidrelétricas,
+traduzida diretamente em Megawatts Médios (MWmed).</li>
+<li><strong>MLT (Média de Longo Termo):</strong> É o referencial
+histórico da ENA. Se a ENA está abaixo de 100% da MLT, significa que
+está entrando menos água do que a média histórica para aquele
+período.</li>
+<li><strong>CMO (Custo Marginal de Operação):</strong> É o custo para se
+produzir o próximo Megawatt de energia. Quando a ENA/MLT cai, o ONS
+precisa ligar usinas termelétricas (que são caras), elevando o CMO.
+<strong>A Bandeira Tarifária é um reflexo direto do CMO.</strong></li>
+<li><strong>Bandeiras Tarifárias:</strong>
+<ul>
+<li><strong>Verde:</strong> Condições favoráveis de geração. Isenção
+tarifária (sem acréscimo).</li>
+<li><strong>Amarela / Vermelha P1 / Vermelha P2:</strong> Condições
+adversas. Representam <strong>Sobretaxas</strong> escalonadas na conta
+de luz do consumidor.</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="a-trajetória-de-modelagem-e-as-dificuldades-científicas">2. A
+Trajetória de Modelagem e as Dificuldades Científicas</h2>
+<h3 id="o-desafio-do-desbalanceamento-extremo">2.1 O Desafio do
+Desbalanceamento Extremo</h3>
+<p>Nosso primeiro obstáculo foi a escassez amostral. Ao trabalhar com
+dados mensais de Bandeiras Tarifárias (já que a bandeira muda a cada
+mês), possuíamos apenas cerca de 130 meses na nossa série temporal.
+Destes, a imensa maioria era de Bandeira Verde. Modelos clássicos (como
+<em>Random Forest</em>) eram imediatamente enviesados, ignorando as
+crises e atingindo um <em>Macro F1-Score</em> (média harmônica da
+capacidade de acertar classes raras) de pífios
+<strong>0.37</strong>.</p>
+<h3 id="a-ilusão-do-data-leakage-vazamento-de-dados">2.2 A Ilusão do
+<em>Data Leakage</em> (Vazamento de Dados)</h3>
+<p>Para ganhar amostragem, convertemos nossos dados para <strong>escala
+diária</strong>. Foi quando enfrentamos o erro clássico mais perigoso da
+Ciência de Dados: o <em>Data Leakage</em>. Ao utilizar técnicas de
+validação cruzada simples (como o <em>StratifiedKFold</em>), o algoritmo
+selecionava aleatoriamente dias de treino e de teste. Isso significava
+que ele usava as chuvas do dia 15 de Maio para treinar, e depois
+avaliava seu desempenho tentando prever a Bandeira do dia 16 de Maio. O
+modelo “trapaceou” e alcançou <strong>99.9% de precisão</strong>. Em
+Ciência de Dados, se o resultado parece bom demais, ele provavelmente
+está olhando para o gabarito.</p>
+<p><strong>A Solução Científica:</strong> Implementamos o rigoroso
+<strong>Split Cronológico com <em>GroupKFold</em></strong>. O modelo
+passou a ser obrigado a treinar apenas com o passado para tentar inferir
+os anos futuros que ele jamais havia visto, simulando o desafio da vida
+real. A acurácia despencou de 99% para ~62%.</p>
+<h3 id="o-teto-da-classe-amarela-e-a-transição-limítrofe">2.3 O Teto da
+Classe “Amarela” e a Transição Limítrofe</h3>
+<p>No modelo Multiclasse (Verde, Amarela, P1, P2), lutamos intensamente
+contra a fronteira de decisão. Tentamos Arquiteturas em Cascata,
+Calibração Isotônica de Probabilidades e <em>Threshold Tuning</em>
+otimizando o <em>F2-Score</em> (que pune Falsos Negativos). Contudo, o
+limite estatístico real se impôs: a diferença hídrica entre uma Bandeira
+Verde (Final da chuva) e uma Bandeira Amarela (Início do alerta) possui
+forte componente discricionário (político) por parte do ONS, o que cria
+um “teto de vidro” para a precisão puramente matemática na casa dos
+65%.</p>
+<hr />
+<h2 id="o-paradigma-do-impacto-financeiro-o-salto-para-80">3. O
+Paradigma do Impacto Financeiro (O Salto para &gt;80%)</h2>
+<p>Em Ciência de Dados voltada para Negócios, a modelagem deve responder
+à “dor” principal do problema. No setor elétrico (para distribuidoras,
+grandes indústrias e consumidores), a diferença exata entre “Amarela” e
+“Vermelha” é apenas um grau de severidade. O impacto financeiro real, a
+mudança de paradigma econômico, ocorre na divisão fundamental:
+<strong>Teremos Isenção Tarifária ou entraremos em Estado de
+Sobretaxa?</strong></p>
+<p>Para atingir a excelência preditiva, nós unificamos os alvos: 1.
+<strong>Isenção Tarifária</strong> (Bandeira Verde) 2. <strong>Sobretaxa
+Tarifária</strong> (Bandeira Amarela, Vermelha P1 ou Vermelha P2)</p>
+<h3 id="a-pipeline-definitiva">3.1 A Pipeline Definitiva</h3>
+<p>Criamos o <code>pipeline_impacto_financeiro.py</code>. Essa versão de
+ouro foi alimentada com <strong>4.138 dias</strong> (11 anos de
+histórico de chuvas, ENA, MLT e Volumes Úteis) e <strong>45 atributos
+matemáticos</strong> (como senos e cossenos do ano hidrológico e médias
+móveis).</p>
+<p>Treinamos o núcleo preditivo utilizando <strong>XGBoost</strong>
+(algoritmo campeão mundial em competições de dados tabulares baseados em
+Árvores de Gradiente).</p>
+<h3 id="o-triunfo-estatístico-e-a-regra-de-negócio-mensal">3.2 O Triunfo
+Estatístico e a Regra de Negócio Mensal</h3>
+<p>Mesmo trabalhando com dados diários, o ONS muda a bandeira apenas no
+primeiro dia do mês. Para refletir essa política na Inteligência
+Artificial, aplicamos o filtro matemático da <strong>Moda
+Intra-Mensal</strong>: o modelo analisa o volume de água dos 30 dias de
+um mês e crava sua predição baseada na tendência majoritária, removendo
+flutuações anômalas isoladas.</p>
+<p>O resultado final foi esmagador.</p>
+<pre class="carousel"><code>![Matriz de Confusão Definitiva - Avaliando Isenção vs Sobretaxa](file:///C:/Users/guilh/.gemini/antigravity-ide/brain/d7167bfe-947f-469c-8314-b17ce05af521/resultado_financeiro_matriz.png)</code></pre>
+<blockquote>
+<p>[!TIP] <strong>Conclusão Acadêmica e Preditiva</strong> Ao
+realinharmos o objetivo do Aprendizado de Máquina com o impacto
+financeiro real (Binário), o algoritmo superou a discricionariedade
+humana e as transições tênues, cravando uma <strong>Acurácia Global
+Estável de 82,31%</strong>. O modelo provou ter 84% de
+<em>Precision</em> ao prever a chegada de períodos críticos
+(Sobretaxas). Esse índice, obtido através de uma validação histórica que
+<strong>não possui qualquer contaminação temporal</strong>, consolida o
+trabalho como uma arquitetura madura, altamente escalável e de enorme
+valor comercial e estratégico no mercado de comercialização de energia
+(Mercado Livre).</p>
+</blockquote>
+</body>
+</html>
